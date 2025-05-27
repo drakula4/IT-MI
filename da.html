@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход / Регистрация</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    let generatedCode = '';
+    let currentPhone = '';
+    let userFullName = '';
+    let mode = '';
+
+    function show(stepId) {
+      document.querySelectorAll('.step').forEach(div => div.style.display = 'none');
+      document.getElementById(stepId).style.display = 'block';
+    }
+
+    function start(modeType) {
+      mode = modeType;
+      show('stepPhone');
+      document.getElementById('phone-error').innerText = '';
+      document.getElementById('phone').value = '';
+    }
+
+    function checkPhone() {
+      const phone = document.getElementById('phone').value.trim();
+      const error = document.getElementById('phone-error');
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+      if (!phone.match(/^\d{10,15}$/)) {
+        error.innerText = 'Введите корректный номер телефона';
+        return;
+      }
+
+      if (mode === 'login') {
+        if (users[phone]) {
+          localStorage.setItem('loggedInUser', users[phone]);
+          window.location.href = 'home.html';
+        } else {
+          error.innerText = 'Номер не зарегистрирован. Пожалуйста, зарегистрируйтесь.';
+        }
+      } else {
+        if (users[phone]) {
+          error.innerText = 'Этот номер уже зарегистрирован. Пожалуйста, войдите.';
+        } else {
+          generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
+          currentPhone = phone;
+          document.getElementById('code-hint').innerText = generatedCode;
+          document.getElementById('code-error').innerText = '';
+          document.getElementById('code').value = '';
+          show('stepCode');
+        }
+      }
+    }
+
+    function verifyCode() {
+      const entered = document.getElementById('code').value.trim();
+      if (entered !== generatedCode) {
+        document.getElementById('code-error').innerText = 'Неверный код';
+      } else {
+        document.getElementById('code-error').innerText = '';
+        show('stepName');
+      }
+    }
+
+    function finishRegistration() {
+      const last = document.getElementById('lastName').value.trim();
+      const first = document.getElementById('firstName').value.trim();
+      const middle = document.getElementById('middleName').value.trim();
+      const error = document.getElementById('name-error');
+
+      if (!first || !last || !middle) {
+        error.innerText = 'Пожалуйста, заполните все поля';
+        return;
+      }
+
+      userFullName = `${first} ${last}`;
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      users[currentPhone] = userFullName;
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('loggedInUser', userFullName);
+
+      show('stepSuccess');
+      setTimeout(() => window.location.href = 'home.html', 1000);
+    }
+
+    window.onload = () => show('stepChoice');
+  </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-md space-y-6">
+
+    <!-- Выбор -->
+    <div id="stepChoice" class="step text-center space-y-4">
+      <h2 class="text-xl font-bold mb-4">Добро пожаловать</h2>
+      <button onclick="start('login')" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Войти</button>
+      <button onclick="start('register')" class="bg-green-500 text-white px-4 py-2 rounded w-full">Зарегистрироваться</button>
+    </div>
+
+    <!-- Телефон -->
+    <div id="stepPhone" class="step hidden">
+      <input id="phone" type="tel" placeholder="Номер телефона" class="border p-2 w-full rounded mb-2" />
+      <div id="phone-error" class="text-red-500 text-sm mb-3"></div>
+      <button onclick="checkPhone()" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Продолжить</button>
+    </div>
+
+    <!-- Код -->
+    <div id="stepCode" class="step hidden">
+      <p class="mb-2">Введите код, указанный ниже:</p>
+      <div id="code-hint" class="text-center text-2xl font-bold text-blue-600 bg-blue-100 p-3 rounded mb-3"></div>
+      <input id="code" type="text" placeholder="Введите код" class="border p-2 w-full rounded mb-1 text-center text-lg" />
+      <div id="code-error" class="text-red-500 text-sm mb-3"></div>
+      <button onclick="verifyCode()" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Продолжить</button>
+    </div>
+
+    <!-- Имя -->
+    <div id="stepName" class="step hidden">
+      <input id="lastName" type="text" placeholder="Фамилия" class="border p-2 w-full rounded mb-2" />
+      <input id="firstName" type="text" placeholder="Имя" class="border p-2 w-full rounded mb-2" />
+      <input id="middleName" type="text" placeholder="Отчество" class="border p-2 w-full rounded mb-2" />
+      <div id="name-error" class="text-red-500 text-sm mb-3"></div>
+      <button onclick="finishRegistration()" class="bg-green-500 text-white px-4 py-2 rounded w-full">Завершить регистрацию</button>
+    </div>
+
+    <!-- Успех -->
+    <div id="stepSuccess" class="step hidden text-center">
+      <h2 class="text-2xl font-bold text-green-600">✅ Регистрация успешна!</h2>
+      <p class="mt-2 text-gray-700">Переход на главную страницу...</p>
+    </div>
+
+    <!-- Ссылки -->
+    <div class="text-center pt-4 border-t mt-4">
+      <p class="text-sm text-gray-600 mb-2 font-semibold">📌 IT-MM B</p>
+      <div class="flex justify-center gap-4">
+        <a href="https://wa.me/79887845664" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm">WhatsApp</a>
+        <a href="https://www.instagram.com/the.mgmmdv?igsh=MW50eHpscTA4OHN3cw==&utm_source=qr" target="_blank" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded text-sm">Instagram</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

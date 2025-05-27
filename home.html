@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Добро пожаловать</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .transition-max-height { transition: max-height 0.5s ease; }
+    .animate-fade-in-down {
+      animation: fadeInDown 0.8s ease-out forwards;
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <script>
+    window.onload = function () {
+      const name = localStorage.getItem('loggedInUser') || 'Гость';
+      const userDisplay = document.getElementById('user-name');
+      userDisplay.innerText = name;
+      document.getElementById('name-input').value = name;
+    };
+
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'da.html';
+    }
+
+    function toggleSection(sectionId) {
+      const sections = ['top-app-panel', 'games-panel', 'about-panel', 'settings-panel'];
+      sections.forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    function saveName() {
+      const newName = document.getElementById('name-input').value;
+      localStorage.setItem('loggedInUser', newName);
+      document.getElementById('user-name').innerText = newName;
+      alert('Имя успешно обновлено!');
+    }
+
+    function changeTheme(theme) {
+      const body = document.body;
+      body.className = theme;
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans">
+
+  <!-- Панель входа -->
+  <div class="flex justify-between items-center p-5 bg-white bg-opacity-90 shadow-xl rounded-b-2xl animate-fade-in-down">
+    <div class="flex items-center space-x-3">
+      <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+      <span class="text-lg text-gray-800 font-bold">
+        ✅ Вы вошли как: <span id="user-name" class="text-blue-600 underline underline-offset-4">Магомед</span>
+      </span>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="toggleSection('settings-panel')" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow transition-all duration-300">
+        ⚙️ Настройки
+      </button>
+      <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow transition-all duration-300">
+        🚪 Выйти
+      </button>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="flex justify-center gap-4 mt-6 flex-wrap">
+    <button onclick="toggleSection('top-app-panel')" class="bg-white text-purple-700 font-bold px-6 py-3 rounded-xl shadow-md hover:shadow-xl transition-all">
+      📂 Мои проекты
+    </button>
+    <button onclick="toggleSection('games-panel')" class="bg-white text-green-700 font-bold px-6 py-3 rounded-xl shadow-md hover:shadow-xl transition-all">
+      🎮 Мини-игры
+    </button>
+    <button onclick="toggleSection('about-panel')" class="bg-white text-blue-700 font-bold px-6 py-3 rounded-xl shadow-md hover:shadow-xl transition-all">
+      ℹ️ О себе
+    </button>
+  </div>
+
+  <!-- Проекты -->
+  <div id="top-app-panel" class="hidden mt-6 mx-auto w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-lg">
+    <div class="p-6">
+      <h2 class="text-2xl font-bold mb-4 text-purple-700">🎯 Моё приложение</h2>
+      <div class="mt-4 p-6 bg-white bg-opacity-95 rounded-xl shadow-lg flex flex-col sm:flex-row items-center gap-6">
+        <img src="WhatsApp Image 2025-04-27 at 22.45.11.jpeg" alt="Drift Battle Dagestan" class="w-24 h-24 rounded-xl shadow-md object-cover" />
+        <div class="flex-1">
+          <h3 class="text-2xl font-bold text-gray-800 mb-2">🚗 Drift Battle Dagestan</h3>
+          <p class="text-gray-700 mb-4">Участвуй в дрифт-битвах на улицах Дагестана! Реалистичная физика, крутые тачки и уличный стиль. Стань легендой дрифта!</p>
+          <a href="https://www.rustore.ru/catalog/app/com.magomedraizerov.driftbattledagestan" target="_blank"
+             class="inline-block bg-purple-600 text-white px-5 py-2 rounded-full shadow hover:bg-purple-700 transition">
+            🌐 Открыть в RuStore
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Игры -->
+  <div id="games-panel" class="hidden mt-6 mx-auto w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-lg">
+    <div class="p-6">
+      <h2 class="text-2xl font-bold mb-4 text-green-700">🎮 Развлекательные игры</h2>
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">🔢 2048</h3>
+        <a href="2048.html" target="_blank" class="inline-block bg-yellow-500 text-white px-5 py-2 rounded-full shadow hover:bg-yellow-600 transition">
+          ▶️ Играть в 2048
+        </a>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">🐍 Змейка</h3>
+        <a href="snake.html" target="_blank" class="inline-block bg-green-600 text-white px-5 py-2 rounded-full shadow hover:bg-green-700 transition">
+          ▶️ Играть в Змейку
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- О себе -->
+  <div id="about-panel" class="hidden mt-6 mx-auto w-full max-w-4xl bg-white bg-opacity-90 rounded-xl shadow-lg">
+    <div class="p-6 text-center">
+      <h2 class="text-2xl font-bold mb-4 text-blue-700">👤 О себе</h2>
+      <p class="text-gray-800 mb-4 text-lg">
+        Всем привет! Меня зовут <span class="font-semibold text-blue-600">Магомед</span>, и я создатель проекта <span class="text-green-600 font-bold">IT-MM</span>.
+      </p>
+      <p class="text-gray-700 mb-4">
+        Этот сайт — моя площадка для творчества, саморазвития и развлечения. Я создаю игры, приложения и делаю то, что мне действительно нравится. Здесь ты можешь поиграть в классическую «Змейку», «2048», а также узнать больше обо мне и моих проектах.
+      </p>
+      <p class="text-gray-600 mb-6 text-sm">Следи за мной и пиши напрямую:</p>
+      <div class="flex justify-center space-x-4">
+        <a href="https://wa.me/79887845664" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 shadow">
+          💬 WhatsApp
+        </a>
+        <a href="https://www.instagram.com/the.mgmmdv" target="_blank" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 shadow">
+          📸 Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Настройки -->
+  <div id="settings-panel" class="hidden mt-6 mx-auto w-full max-w-2xl bg-white bg-opacity-90 rounded-xl shadow-lg">
+    <div class="p-6">
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">⚙️ Настройки профиля</h2>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2">✏️ Изменить имя:</label>
+        <input type="text" id="name-input" class="w-full p-2 border rounded mb-2" />
+        <button onclick="saveName()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">💾 Сохранить</button>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2">🎨 Выбор темы:</label>
+        <div class="flex gap-2">
+          <button onclick="changeTheme('bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500')" class="bg-pink-500 text-white px-4 py-1 rounded">Тема 1</button>
+          <button onclick="changeTheme('bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500')" class="bg-teal-500 text-white px-4 py-1 rounded">Тема 2</button>
+          <button onclick="changeTheme('bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400')" class="bg-gray-700 text-white px-4 py-1 rounded">Тёмная</button>
+        </div>
+      </div>
+
+      <div class="text-gray-600 text-sm mt-6">
+        ✅ Здесь будут добавлены новые функции: смена аватара, настройка уведомлений, язык интерфейса и многое другое.
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
